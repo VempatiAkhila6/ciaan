@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini LinkedIn Community</title>
+  <style>
+    :root {
+      --primary-color: #0073b1;
+      --secondary-color: #005983;
+      --accent-color: #00a0dc;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #17a2b8;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+      --text-color: #333;
+      --border-color: #dee2e6;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--light-color) 0%, #e9ecef 100%);
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+
+    nav {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .profile-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .profile-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: white;
+      min-width: 200px;
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      z-index: 1001;
+      margin-top: 0.5rem;
+    }
+
+    .profile-menu.show {
+      display: block;
+    }
+
+    .profile-menu a {
+      color: var(--text-color);
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .profile-menu a:hover {
+      background-color: var(--light-color);
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      min-height: 80vh;
+    }
+
+    .welcome-section {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .welcome-section h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    .welcome-section p {
+      font-size: 1.4rem;
+      margin-bottom: 3rem;
+      opacity: 0.9;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .auth-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .auth-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    input, textarea, select {
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 115, 177, 0.1);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 115, 177, 0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--info-color) 0%, #138496 100%);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger-color) 0%, #c82333 100%);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+    }
+
+    .sidebar {
+      background: var(--light-color);
+      padding: 1.5rem;
+      border-radius: 8px;
+      height: fit-content;
+    }
+
+    .profile-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0 auto 1rem;
+    }
+
+    .profile-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .main-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .message-box {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .message-box h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+    }
+
+    .message-box p {
+      margin: 0;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .post-creator {
+      background: var(--light-color);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .feed {
+      margin-top: 2rem;
+    }
+
+    .post {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .post:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .post .author {
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+    }
+
+    .post .timestamp {
+      color: #888;
+      font-size: 0.9em;
+    }
+
+    .post .content {
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .file-upload {
+      margin: 1rem 0;
+      padding: 1rem;
+      border: 2px dashed var(--border-color);
+      border-radius: 6px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .file-upload:hover {
+      border-color: var(--primary-color);
+      background: rgba(0, 115, 177, 0.05);
+    }
+
+    .file-upload input[type="file"] {
+      display: none;
+    }
+
+    .file-upload label {
+      cursor: pointer;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .upload-preview {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .post-media {
+      margin-top: 1rem;
+    }
+
+    .post-media img, .post-media video {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #aaa;
+    }
+
+    .close:hover {
+      color: var(--danger-color);
+    }
+
+    @media (max-width: 768px) {
+      .auth-container {
+        padding: 0 1rem;
+      }
+     
+      .dashboard {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+     
+      main {
+        margin: 1rem;
+        padding: 1rem;
+      }
+     
+      nav {
+        padding: 1rem;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+      }
+
+      .welcome-section p {
+        font-size: 1.1rem;
+      }
+
+      .profile-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .profile-menu {
+        right: -50px;
+        min-width: 180px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-section h1 {
+        font-size: 2rem;
+      }
+
+      .welcome-section p {
+        font-size: 1rem;
+      }
+
+      .post-creator {
+        padding: 1rem;
+      }
+
+      .post {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h1>Mini LinkedIn</h1>
+    <div class="nav-buttons">
+      <div class="profile-dropdown" id="profile-dropdown" style="display:none;">
+        <button class="profile-btn" onclick="toggleProfileMenu()">
+          <span id="profile-initial"></span>
+          <span id="profile-name-nav"></span>
+          <span>▼</span>
+        </button>
+        <div class="profile-menu" id="profile-menu">
+          <a href="#" onclick="showSettings()">⚙️ Settings</a>
+          <a href="#" onclick="logout()">🚪 Logout</a>
+        </div>
+      </div>
+      <button id="theme-toggle" class="btn-secondary">🎨 Theme</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Welcome Section -->
+    <section id="welcome-section" class="welcome-section">
+      <h1>Welcome to Mini LinkedIn</h1>
+      <p>Connect, share, and grow your professional network</p>
+      <button onclick="showAuth()" class="btn-success">Get Started</button>
+    </section>
+
+    <!-- Auth Section -->
+    <section id="auth-section" style="display:none;">
+      <div class="auth-container">
+        <!-- Login Form -->
+        <div class="auth-card" id="login-card">
+          <h2>Login</h2>
+          <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required />
+            <input type="password" id="login-password" placeholder="Password" required />
+            <button type="submit" class="btn-success">Login</button>
+          </form>
+          <p style="text-align: center; margin-top: 1rem;">
+            Don't have an account? <a href="#" onclick="showRegister()" style="color: var(--primary-color);">Register here</a>
+          </p>
+        </div>
+        
+        <!-- Register Form -->
+        <div class="auth-card" id="register-card" style="display:none;">
+          <h2>Register</h2>
+          <form id="register-form">
+            <input type="text" id="register-name" placeholder="Full Name" required />
+            <input type="email" id="register-email" placeholder="Email" required />
+            <input type="password" id="register-password" placeholder="Password" required />
+            <textarea id="register-bio" placeholder="Tell us about yourself..." required></textarea>
+            <button type="submit" class="btn-success">Register</button>
+          </form>
+          <p style="text-align: center; margin-top: 1rem;">
+            Already have an account? <a href="#" onclick="showLogin()" style="color: var(--primary-color);">Login here</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard-section" style="display:none;">
+      <div class="dashboard">
+        <div class="sidebar">
+          <div class="profile-card">
+            <div class="profile-avatar" id="profile-avatar"></div>
+            <div class="profile-name" id="profile-name"></div>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="following-count">0</span>
+                <span class="stat-label">Following</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="followers-count">0</span>
+                <span class="stat-label">Followers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="message-box">
+            <h3>Welcome to Your Professional Network!</h3>
+            <p>Connect with professionals, share insights, and grow your career. Start by creating your first post or exploring the feed below.</p>
+          </div>
+
+          <div class="post-creator">
+            <h2>Create Post</h2>
+            <form id="post-form">
+              <textarea id="post-content" placeholder="What's on your mind?" required></textarea>
+              
+              <div class="file-upload">
+                <input type="file" id="photo-upload" accept="image/*" multiple />
+                <label for="photo-upload">📷 Add Photos</label>
+              </div>
+              
+              <div class="file-upload">
+                <input type="file" id="video-upload" accept="video/*" multiple />
+                <label for="video-upload">🎥 Add Videos</label>
+              </div>
+              
+              <div class="upload-preview" id="upload-preview"></div>
+              
+              <button type="submit" class="btn-success">📤 Post</button>
+            </form>
+          </div>
+
+          <div class="feed">
+            <h2>Feed</h2>
+            <div id="posts"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeSettings()">&times;</span>
+      <div id="settings-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // Demo in-memory "database"
+    let users = [
+      { 
+        name: "Vangala Bhanu", 
+        email: "bhanu@demo.com", 
+        password: "bhanu123", 
+        bio: "I'm passionate about data, AI, and how machines can learn from information. I enjoy exploring data, finding patterns, and building smart systems using Python, pandas, and machine learning libraries. Whether it's predicting outcomes or automating tasks, I love using data to solve real-world problems. I'm eager to learn more, work on innovative projects, and grow as a data scientist.",
+        posts: 12,
+        likes: 45,
+        connections: 28,
+        followers: 100,
+        following: 100
+      },
+      { 
+        name: "Polishetty Keerthi", 
+        email: "keerthi@demo.com", 
+        password: "keerthi123", 
+        bio: "I'm a self-motivated web developer who loves building user-friendly websites and apps. I enjoy turning ideas into real, working projects using tools like HTML, CSS, JavaScript, and React. I'm also learning backend development with Node.js and MongoDB. I like working in teams, solving problems, and continuously improving my skills. My goal is to become a full-stack developer and contribute to meaningful tech solutions.",
+        posts: 8,
+        likes: 32,
+        connections: 19,
+        followers: 100,
+        following: 100
+      }
+    ];
+    let posts = [
+      { 
+        id: 1,
+        content: "I'm passionate about data, AI, and how machines can learn from information. I enjoy exploring data, finding patterns, and building smart systems using Python, pandas, and machine learning libraries. Whether it's predicting outcomes or automating tasks, I love using data to solve real-world problems. I'm eager to learn more, work on innovative projects, and grow as a data scientist.", 
+        author: "Vangala Bhanu", 
+        timestamp: new Date().toLocaleString(), 
+        email: "bhanu@demo.com", 
+        media: [],
+        likes: 5,
+        likedBy: ["keerthi@demo.com"],
+        comments: [
+          { author: "Polishetty Keerthi", text: "I'm a self-motivated web developer who loves building user-friendly websites and apps. I enjoy turning ideas into real, working projects using tools like HTML, CSS, JavaScript, and React. I'm also learning backend development with Node.js and MongoDB. I like working in teams, solving problems, and continuously improving my skills. My goal is to become a full-stack developer and contribute to meaningful tech solutions.", timestamp: new Date().toLocaleString() }
+        ]
+      },
+      { 
+        id: 2,
+        content: "Just started my journey in software engineering. Looking forward to learning and growing!", 
+        author: "Polishetty Keerthi", 
+        timestamp: new Date().toLocaleString(), 
+        email: "keerthi@demo.com", 
+        media: [],
+        likes: 3,
+        likedBy: ["bhanu@demo.com"],
+        comments: [
+          { author: "Vangala Bhanu", text: "Great to see your passion! Keep learning.", timestamp: new Date().toLocaleString() }
+        ]
+      }
+    ];
+
+    let currentUser = null;
+    let uploadedFiles = [];
+
+    // DOM Elements
+    const welcomeSection = document.getElementById('welcome-section');
+    const authSection = document.getElementById('auth-section');
+    const dashboardSection = document.getElementById('dashboard-section');
+    const postsDiv = document.getElementById('posts');
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsContent = document.getElementById('settings-content');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const profileMenu = document.getElementById('profile-menu');
+
+    // Theme colors
+    const themes = [
+      { name: 'LinkedIn Blue', primary: '#0073b1', secondary: '#005983', accent: '#00a0dc' },
+      { name: 'Green', primary: '#28a745', secondary: '#1e7e34', accent: '#20c997' },
+      { name: 'Purple', primary: '#6f42c1', secondary: '#5a2d91', accent: '#e83e8c' },
+      { name: 'Orange', primary: '#fd7e14', secondary: '#e55a00', accent: '#ffc107' },
+      { name: 'Red', primary: '#dc3545', secondary: '#c82333', accent: '#fd7e14' },
+      { name: 'Teal', primary: '#17a2b8', secondary: '#138496', accent: '#20c997' }
+    ];
+
+    let currentTheme = 0;
+
+    // Show/Hide sections
+    function showAuth() {
+      welcomeSection.style.display = 'none';
+      authSection.style.display = 'block';
+    }
+
+    function showLogin() {
+      document.getElementById('login-card').style.display = 'block';
+      document.getElementById('register-card').style.display = 'none';
+    }
+
+    function showRegister() {
+      document.getElementById('login-card').style.display = 'none';
+      document.getElementById('register-card').style.display = 'block';
+    }
+
+    // Theme toggle
+    document.getElementById('theme-toggle').onclick = function() {
+      currentTheme = (currentTheme + 1) % themes.length;
+      applyTheme(currentTheme);
+    };
+
+    function applyTheme(themeIndex) {
+      const theme = themes[themeIndex];
+      document.documentElement.style.setProperty('--primary-color', theme.primary);
+      document.documentElement.style.setProperty('--secondary-color', theme.secondary);
+      document.documentElement.style.setProperty('--accent-color', theme.accent);
+    }
+
+    // Auth
+    document.getElementById('login-form').onsubmit = function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      const user = users.find(u => u.email === email && u.password === password);
+      if (user) {
+        login(user);
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
+      } else {
+        alert('Invalid email or password. Please try again.');
+      }
+    };
+
+    document.getElementById('register-form').onsubmit = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+      const bio = document.getElementById('register-bio').value.trim();
+      
+      if (!name || !email || !password || !bio) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      if (users.some(u => u.email === email)) {
+        alert('Email already registered. Please use a different email or login.');
+        return;
+      }
+      
+      const user = { 
+        name, 
+        email, 
+        password, 
+        bio,
+        posts: 0,
+        likes: 0,
+        connections: 0,
+        followers: 100,
+        following: 100
+      };
+      users.push(user);
+      login(user);
+      
+      document.getElementById('register-name').value = '';
+      document.getElementById('register-email').value = '';
+      document.getElementById('register-password').value = '';
+      document.getElementById('register-bio').value = '';
+    };
+
+    function login(user) {
+      currentUser = user;
+      authSection.style.display = 'none';
+      dashboardSection.style.display = 'block';
+      profileDropdown.style.display = 'block';
+      renderProfile();
+      renderPosts();
+    }
+
+    function logout() {
+      currentUser = null;
+      dashboardSection.style.display = 'none';
+      welcomeSection.style.display = 'block';
+      profileDropdown.style.display = 'none';
+      profileMenu.classList.remove('show');
+    }
+
+    function toggleProfileMenu() {
+      profileMenu.classList.toggle('show');
+    }
+
+    // Close profile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.profile-dropdown')) {
+        profileMenu.classList.remove('show');
+      }
+    });
+
+    // Profile
+    function renderProfile() {
+      if (!currentUser) return;
+      
+      document.getElementById('profile-name').textContent = currentUser.name;
+      document.getElementById('profile-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+      
+      document.getElementById('profile-initial').textContent = currentUser.name.charAt(0).toUpperCase();
+      document.getElementById('profile-name-nav').textContent = currentUser.name;
+      
+      document.getElementById('following-count').textContent = currentUser.following || 100;
+      document.getElementById('followers-count').textContent = currentUser.followers || 100;
+    }
+
+    // File upload handling
+    document.getElementById('photo-upload').onchange = function(e) {
+      handleFileUpload(e.target.files, 'image');
+    };
+
+    document.getElementById('video-upload').onchange = function(e) {
+      handleFileUpload(e.target.files, 'video');
+    };
+
+    function handleFileUpload(files, type) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedFiles.push({
+            type: type,
+            name: file.name,
+            data: e.target.result
+          });
+          renderUploadPreview();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderUploadPreview() {
+      const preview = document.getElementById('upload-preview');
+      preview.innerHTML = uploadedFiles.map((file, index) => `
+        <div style="position: relative; display: inline-block;">
+          ${file.type === 'image' ? 
+            `<img src="${file.data}" alt="${file.name}" style="max-width: 150px; max-height: 150px; border-radius: 6px; object-fit: cover;" />` :
+            `<video src="${file.data}" controls style="max-width: 150px; max-height: 150px; border-radius: 6px;" />`
+          }
+          <button onclick="removeFile(${index})" style="position: absolute; top: -5px; right: -5px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">×</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFile(index) {
+      uploadedFiles.splice(index, 1);
+      renderUploadPreview();
+    }
+
+    // Posts
+    document.getElementById('post-form').onsubmit = function(e) {
+      e.preventDefault();
+      const content = document.getElementById('post-content').value;
+      if (!content.trim() && uploadedFiles.length === 0) return;
+      
+      const newPost = {
+        id: Date.now(),
+        content,
+        author: currentUser.name,
+        timestamp: new Date().toLocaleString(),
+        email: currentUser.email,
+        media: [...uploadedFiles],
+        likes: 0,
+        likedBy: [],
+        comments: []
+      };
+      
+      posts.unshift(newPost);
+      
+      document.getElementById('post-content').value = '';
+      uploadedFiles = [];
+      renderUploadPreview();
+      renderPosts();
+    };
+
+    function renderPosts() {
+      postsDiv.innerHTML = posts.map(post => `
+        <div class="post">
+          <div class="post-header">
+            <div class="author">${post.author}</div>
+            <div class="timestamp">${post.timestamp}</div>
+          </div>
+          <div class="content">${post.content}</div>
+          ${post.media && post.media.length > 0 ? `
+            <div class="post-media">
+              ${post.media.map(media => 
+                media.type === 'image' ? 
+                  `<img src="${media.data}" alt="${media.name}" style="max-width: 100%; border-radius: 6px; margin-top: 0.5rem;" />` :
+                  `<video src="${media.data}" controls style="max-width: 100%; border-radius: 6px; margin-top: 0.5rem;" />`
+              ).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    // Settings
+    function showSettings() {
+      profileMenu.classList.remove('show');
+      settingsModal.style.display = 'block';
+      showSetting('account');
+    }
+
+    function showSetting(type) {
+      settingsModal.style.display = 'block';
+      let content = '';
+      
+      switch(type) {
+        case 'account':
+          content = `
+            <h2>Account Preferences</h2>
+            <form id="account-form">
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Full Name</label>
+                <input type="text" id="edit-name" value="${currentUser.name}" style="width: 100%;" />
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Email</label>
+                <input type="email" id="edit-email" value="${currentUser.email}" style="width: 100%;" />
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">About Me</label>
+                <textarea id="edit-bio" style="width: 100%; min-height: 120px;" placeholder="Tell us about yourself...">${currentUser.bio}</textarea>
+              </div>
+              <button type="submit" class="btn-success">Save Changes</button>
+            </form>
+          `;
+          break;
+        case 'signin':
+          content = `
+            <h2>Sign In & Security</h2>
+            <form id="security-form">
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Current Password</label>
+                <input type="password" id="current-password" placeholder="Enter current password" style="width: 100%;" />
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password" style="width: 100%;" />
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Confirm New Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password" style="width: 100%;" />
+              </div>
+              <button type="submit" class="btn-success">Change Password</button>
+            </form>
+            <hr style="margin: 2rem 0;">
+            <div>
+              <h3>Two-Factor Authentication</h3>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" /> Enable two-factor authentication</label>
+              </div>
+              <button class="btn-secondary">Set Up 2FA</button>
+            </div>
+          `;
+          break;
+        case 'privacy':
+          content = `
+            <h2>Data Privacy</h2>
+            <div style="margin-bottom: 2rem;">
+              <h3>Profile Visibility</h3>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> Profile visible to everyone</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> Show my posts to all users</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" /> Show online status</label>
+              </div>
+            </div>
+            <div style="margin-bottom: 2rem;">
+              <h3>Communication</h3>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> Allow messages from connections</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> Allow connection requests</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" /> Allow messages from anyone</label>
+              </div>
+            </div>
+            <button class="btn-success">Save Privacy Settings</button>
+          `;
+          break;
+        case 'notifications':
+          content = `
+            <h2>Notifications</h2>
+            <div style="margin-bottom: 2rem;">
+              <h3>Email Notifications</h3>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> New connection requests</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> Messages from connections</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" checked /> Post likes and comments</label>
+              </div>
+              <div style="margin: 1rem 0;">
+                <label><input type="checkbox" /> Weekly digest</label>
+              </div>
+            </div>
+            <button class="btn-success">Save Notification Settings</button>
+          `;
+          break;
+        case 'help':
+          content = `
+            <h2>Help Center</h2>
+            <div style="margin-bottom: 2rem;">
+              <h3>Frequently Asked Questions</h3>
+              <div style="margin: 1rem 0;">
+                <details style="margin-bottom: 0.5rem;">
+                  <summary style="cursor: pointer; font-weight: bold;">How to create a post?</summary>
+                  <p style="margin-top: 0.5rem; color: #666;">Click on the "Create Post" section and write your content.</p>
+                </details>
+                <details style="margin-bottom: 0.5rem;">
+                  <summary style="cursor: pointer; font-weight: bold;">How to change theme?</summary>
+                  <p style="margin-top: 0.5rem; color: #666;">Click the "🎨 Theme" button in the top navigation bar.</p>
+                </details>
+              </div>
+            </div>
+            <button class="btn-secondary">Contact Support</button>
+          `;
+          break;
+      }
+      
+      settingsContent.innerHTML = content;
+      
+      if (type === 'account') {
+        document.getElementById('account-form').onsubmit = function(e) {
+          e.preventDefault();
+          saveAccountChanges();
+        };
+      } else if (type === 'signin') {
+        document.getElementById('security-form').onsubmit = function(e) {
+          e.preventDefault();
+          saveSecurityChanges();
+        };
+      }
+    }
+    
+    function saveAccountChanges() {
+      const newName = document.getElementById('edit-name').value.trim();
+      const newEmail = document.getElementById('edit-email').value.trim();
+      const newBio = document.getElementById('edit-bio').value.trim();
+      
+      if (!newName || !newEmail || !newBio) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      currentUser.name = newName;
+      currentUser.email = newEmail;
+      currentUser.bio = newBio;
+      
+      const userIndex = users.findIndex(u => u.email === currentUser.email);
+      if (userIndex !== -1) {
+        users[userIndex] = { ...currentUser };
+      }
+      
+      renderProfile();
+      renderPosts();
+      
+      alert('Account updated successfully!');
+    }
+    
+    function saveSecurityChanges() {
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Please fill in all password fields');
+        return;
+      }
+      
+      if (currentPassword !== currentUser.password) {
+        alert('Current password is incorrect');
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        alert('New passwords do not match');
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+      }
+      
+      currentUser.password = newPassword;
+      
+      const userIndex = users.findIndex(u => u.email === currentUser.email);
+      if (userIndex !== -1) {
+        users[userIndex].password = newPassword;
+      }
+      
+      document.getElementById('current-password').value = '';
+      document.getElementById('new-password').value = '';
+      document.getElementById('confirm-password').value = '';
+      
+      alert('Password changed successfully!');
+    }
+
+    function closeSettings() {
+      settingsModal.style.display = 'none';
+    }
+    
+    window.onclick = function(event) {
+      if (event.target === settingsModal) {
+        closeSettings();
+      }
+    }
+  </script>
+</body>
+</html> 
